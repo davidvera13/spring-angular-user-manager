@@ -1,4 +1,4 @@
-package com.manager.user.app.usermanagerbackend;
+package com.manager.user.app;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,4 +1,4 @@
-package com.manager.user.app.usermanagerbackend;
+package com.manager.user.app.domain;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
