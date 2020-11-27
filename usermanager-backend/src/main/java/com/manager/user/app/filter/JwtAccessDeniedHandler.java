@@ -5,10 +5,11 @@ import com.manager.user.app.constant.SecurityConstant;
 import com.manager.user.app.domain.HttpResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -16,22 +17,20 @@ import java.io.OutputStream;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-
 @Slf4j
 @Component
-public class JwtAuthenticationEntryPoint extends Http403ForbiddenEntryPoint {
+public class JwtAccessDeniedHandler implements AccessDeniedHandler {
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException arg2)
-            throws IOException {
-        log.debug("Pre-authenticated entry point called. Rejecting access");
+    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
+        log.debug("Pre-authenticated entry point called. Denying access");
         HttpResponse httpResponse =
                 new HttpResponse(
-                        HttpStatus.FORBIDDEN.value(),
-                        HttpStatus.FORBIDDEN,
-                        HttpStatus.FORBIDDEN.getReasonPhrase().toUpperCase(),
-                        SecurityConstant.FORBIDDEN_MESSAGE);
+                        HttpStatus.UNAUTHORIZED.value(),
+                        HttpStatus.UNAUTHORIZED,
+                        HttpStatus.UNAUTHORIZED.getReasonPhrase().toUpperCase(),
+                        SecurityConstant.ACCESS_DENIED);
         response.setContentType(APPLICATION_JSON_VALUE);
-        response.setStatus(HttpStatus.FORBIDDEN.value());
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
         OutputStream outputStream = response.getOutputStream();
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.writeValue(outputStream, httpResponse);
