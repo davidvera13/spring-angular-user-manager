@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         User user = userRepository.findUserByUserName(username);
         if(user == null) {
             log.error("User not found with provided username : " + username);
-            throw new UsernameNotFoundException("User not found with provided username : " + username)
+            throw new UsernameNotFoundException("User not found with provided username : " + username);
         } else {
             log.info("Returning User : " + username);
             user.setLastLoginDateDisplay(user.getLastLoginDate());
