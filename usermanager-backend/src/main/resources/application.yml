@@ -1,6 +1,9 @@
 server:
   port: 8080
 
+jwt:
+  secret: '[a-zA-Z0-9._]^+$Guidelines89797987forAlphabeticalArraNumeralsandOtherSymbo$'
+
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/usermanagementapp?useSSL=false&serverTimezone=UTC
