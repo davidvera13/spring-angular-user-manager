@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Date;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -29,7 +30,8 @@ public class JwtAuthenticationEntryPoint extends Http403ForbiddenEntryPoint {
                         HttpStatus.FORBIDDEN.value(),
                         HttpStatus.FORBIDDEN,
                         HttpStatus.FORBIDDEN.getReasonPhrase().toUpperCase(),
-                        SecurityConstant.FORBIDDEN_MESSAGE);
+                        SecurityConstant.FORBIDDEN_MESSAGE,
+                        new Date());
         response.setContentType(APPLICATION_JSON_VALUE);
         response.setStatus(HttpStatus.FORBIDDEN.value());
         OutputStream outputStream = response.getOutputStream();

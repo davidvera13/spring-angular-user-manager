@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Date;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -28,7 +29,8 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
                         HttpStatus.UNAUTHORIZED.value(),
                         HttpStatus.UNAUTHORIZED,
                         HttpStatus.UNAUTHORIZED.getReasonPhrase().toUpperCase(),
-                        SecurityConstant.ACCESS_DENIED);
+                        SecurityConstant.ACCESS_DENIED,
+                        new Date());
         response.setContentType(APPLICATION_JSON_VALUE);
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         OutputStream outputStream = response.getOutputStream();
