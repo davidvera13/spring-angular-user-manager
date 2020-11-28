@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findUserByUserName(username);
+        User user = userRepository.findUserByUsername(username);
         if(user == null) {
             log.error("User not found with provided username : " + username);
             throw new UsernameNotFoundException("User not found with provided username : " + username);
@@ -64,6 +64,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         String encodedPassword = encodePassword(password);
         user.setFirstName(firstName);
         user.setLastName(lastName);
+        user.setUsername(userName);
         user.setEmail(email);
         user.setCreatedAt(new Date());
         user.setPassword(encodedPassword);
@@ -130,7 +131,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public User findUserByUsername(String username) {
-        return userRepository.findUserByUserName(username);
+        return userRepository.findUserByUsername(username);
     }
 
     @Override

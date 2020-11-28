@@ -18,7 +18,7 @@ public class User implements Serializable {
     @Column(nullable = false, updatable = false)
     private Long id;
     private String userKeyId;
-    private String userName;
+    private String username;
     private String firstName;
     private String lastName;
     private String email;
