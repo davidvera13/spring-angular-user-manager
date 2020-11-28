@@ -33,4 +33,12 @@ public class HttpResponse {
         this.message = message;
         this.timeStamp = timeStamp;
     }
+
+    public HttpResponse(int httpStatusCode, HttpStatus httpStatus, String toUpperCase, String message) {
+        this.httpStatusCode = httpStatusCode;
+        this.httpStatus = httpStatus;
+        this.reason = reason;
+        this.message = message;
+        this.timeStamp = new Date();
+    }
 }
