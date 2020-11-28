@@ -29,7 +29,7 @@ public class User implements Serializable {
     private Date createdAt;
 
     // for security
-    private String[] roles;         // ROLE_USER(read, update...), ROLE_ADMIN (delete...)
+    private String roles;         // ROLE_USER(read, update...), ROLE_ADMIN (delete...)
     private String[] authorities;   // create, update...
     private boolean isActive;
     private boolean isNotLocked;
