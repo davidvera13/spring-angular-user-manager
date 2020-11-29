@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.mail.MessagingException;
+
 @RestController
 @RequestMapping(path = {"/", "/users"})
 public class UserResource extends AppExceptionHandler {
@@ -38,7 +40,7 @@ public class UserResource extends AppExceptionHandler {
 
     @PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody User user)
-            throws EmailExistsException, UserNotFoundException, UsernameExistsException {
+            throws EmailExistsException, UserNotFoundException, UsernameExistsException, MessagingException {
         User newUser = userService.register(user.getFirstName(), user.getLastName(), user.getUsername(), user.getEmail());
         return new ResponseEntity<>(newUser, HttpStatus.OK);
     }
