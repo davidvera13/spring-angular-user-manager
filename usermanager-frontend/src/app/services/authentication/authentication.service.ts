@@ -10,7 +10,7 @@ import {JwtHelperService} from '@auth0/angular-jwt';
   providedIn: 'root'
 })
 export class AuthenticationService {
-  private host: string = environment.apiUrl;
+  host: string = environment.apiUrl;
   private token!: string | null;
   private loggedUsername!: string;
   private jwtHelperService: JwtHelperService = new JwtHelperService();
