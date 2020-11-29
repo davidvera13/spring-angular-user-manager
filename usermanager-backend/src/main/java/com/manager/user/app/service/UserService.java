@@ -1,11 +1,11 @@
 package com.manager.user.app.service;
 
 import com.manager.user.app.domain.User;
-import com.manager.user.app.exception.domain.EmailExistsException;
-import com.manager.user.app.exception.domain.UserNotFoundException;
-import com.manager.user.app.exception.domain.UsernameExistsException;
+import com.manager.user.app.exception.domain.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
+import java.io.IOException;
 import java.util.List;
 
 public interface UserService {
@@ -13,4 +13,11 @@ public interface UserService {
     List<User> getUsers();
     User findUserByUsername(String username);
     User findUserByEmail(String email);
+    User addNewUser(String firstName, String lastName, String username, String email,
+                    String role, boolean isNonLocked, boolean isActive, MultipartFile profileImage) throws UserNotFoundException, UsernameExistsException, EmailExistsException, IOException, NotAnImageFileException;
+    User updateUser(String currentUsername, String firstName, String lastName, String username, String email,
+                    String role, boolean isNonLocked, boolean isActive, MultipartFile profileImage) throws UserNotFoundException, UsernameExistsException, EmailExistsException, IOException, NotAnImageFileException;
+    void deleteUser(long id);
+    void resetPassword(String email) throws EmailNotFoundException, MessagingException;
+    User updateProfileImage(String usename, MultipartFile profileImage) throws UserNotFoundException, UsernameExistsException, EmailExistsException, IOException, NotAnImageFileException;
 }
