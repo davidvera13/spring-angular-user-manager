@@ -8,7 +8,9 @@ import com.manager.user.app.exception.domain.EmailExistsException;
 import com.manager.user.app.exception.domain.UserNotFoundException;
 import com.manager.user.app.exception.domain.UsernameExistsException;
 import com.manager.user.app.repository.UserRepository;
+import com.manager.user.app.service.LoginAttemptService;
 import com.manager.user.app.service.UserService;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -24,6 +26,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 @Slf4j
 @Service
@@ -32,13 +35,18 @@ import java.util.List;
 public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final LoginAttemptService loginAttemptService;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public UserServiceImpl(UserRepository userRepository,
+                           BCryptPasswordEncoder bCryptPasswordEncoder,
+                           LoginAttemptService loginAttemptService) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.loginAttemptService = loginAttemptService;
     }
 
+    @SneakyThrows
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findUserByUsername(username);
@@ -46,6 +54,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             log.error("User not found with provided username : " + username);
             throw new UsernameNotFoundException("User not found with provided username : " + username);
         } else {
+            validateLoginAttempt(user);
             log.info("Returning User : " + username);
             user.setLastLoginDateDisplay(user.getLastLoginDate());
             user.setLastLoginDate(new Date());
@@ -53,6 +62,19 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             return new UserPrincipal(user);
         }
     }
+
+    private void validateLoginAttempt(User user) throws ExecutionException {
+        if(user.isNotLocked()) {
+            if(loginAttemptService.hasExceededMaxAttempts(user.getUsername())) {
+                user.setNotLocked(false);
+            } else {
+                user.setNotLocked(true);
+            }
+        } else {
+            loginAttemptService.evictUserFromLoginAttemptCache(user.getUsername());
+        }
+    }
+
 
     @Override
     public User register(String firstName, String lastName, String userName, String email)
