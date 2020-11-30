@@ -11,18 +11,14 @@ import {JwtHelperService} from '@auth0/angular-jwt';
 })
 export class AuthenticationService {
   host: string = environment.apiUrl;
-  private token!: string | null;
-  private loggedUsername!: string;
+  private token = '';
+  private loggedUsername = '';
   private jwtHelperService: JwtHelperService = new JwtHelperService();
 
   constructor(private httpClient: HttpClient) { }
 
-  public login(user: User): Observable<HttpResponse<any> | HttpErrorResponse> {
-    return this.httpClient
-      .post<HttpResponse<any> | HttpErrorResponse>(
-        `${this.host}/users/login`,
-        user,
-        { observe: 'response'});
+  public login(user: User): Observable<HttpResponse<User>> {
+    return this.httpClient.post<User>(`${this.host}/users/login`, user, { observe: 'response' });
   }
 
   public register(user: User): Observable<HttpResponse<any> | HttpErrorResponse> {
@@ -34,8 +30,8 @@ export class AuthenticationService {
   }
 
   public logout(): void {
-    this.token = null as any;
-    this.loggedUsername = null as any;
+    this.token = '';
+    this.loggedUsername = '';
     localStorage.removeItem('user');
     localStorage.removeItem('token');
     localStorage.removeItem('users');
@@ -46,7 +42,7 @@ export class AuthenticationService {
     localStorage.setItem('token', token);
   }
 
-  public addUserToLocalStorage(user: User): void {
+  public addUserToLocalStorage(user: User | null): void {
     // localstorage accepts string, we convert object to string to store it
     localStorage.setItem('user', JSON.stringify(user));
   }
@@ -56,7 +52,7 @@ export class AuthenticationService {
   }
 
   public loadToken(): void {
-    this.token = localStorage.getItem('token');
+    this.token = localStorage.getItem('token') as string;
   }
 
   public getToken(): string {
