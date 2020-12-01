@@ -11,8 +11,8 @@ import {JwtHelperService} from '@auth0/angular-jwt';
 })
 export class AuthenticationService {
   public host = environment.apiUrl;
-  private token: string;
-  private loggedInUsername: string;
+  private token!: string;
+  private loggedUsername!: string;
   private jwtHelper: JwtHelperService = new JwtHelperService();
 
   constructor(private httpClient: HttpClient) { }
@@ -26,8 +26,9 @@ export class AuthenticationService {
   }
 
   public logout(): void {
-    this.token = null;
-    this.loggedUsername = null;
+    // tslint:disable-next-line:no-unused-expression
+    this.token = '';
+    this.loggedUsername = '';
     localStorage.removeItem('user');
     localStorage.removeItem('token');
     localStorage.removeItem('users');
@@ -44,11 +45,11 @@ export class AuthenticationService {
   }
 
   public getUserFromLocalStorage(): User {
-    return JSON.parse(localStorage.getItem('user'));
+    return JSON.parse(localStorage.getItem('user') as string);
   }
 
   public loadToken(): void {
-    this.token = localStorage.getItem('token');
+    this.token = (localStorage.getItem('token') as string);
   }
 
   public getToken(): string {
@@ -60,7 +61,7 @@ export class AuthenticationService {
     if (this.token != null && this.token !== ''){
       if (this.jwtHelper.decodeToken(this.token).sub != null || '') {
         if (!this.jwtHelper.isTokenExpired(this.token)) {
-          this.loggedInUsername = this.jwtHelper.decodeToken(this.token).sub;
+          this.loggedUsername = this.jwtHelper.decodeToken(this.token).sub;
           return true;
         }
       }
@@ -68,5 +69,6 @@ export class AuthenticationService {
       this.logout();
       return false;
     }
+    return false;
   }
 }
