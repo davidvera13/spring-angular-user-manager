@@ -13,18 +13,12 @@ export class AuthInterceptor implements HttpInterceptor {
 
   constructor(private authenticationService: AuthenticationService) {}
 
-  intercept(httpRequest: HttpRequest<any>, httpHandler: HttpHandler): Observable<HttpEvent<unknown>> {
+  intercept(httpRequest: HttpRequest<any>, httpHandler: HttpHandler): Observable<HttpEvent<any>> {
     // no headers to add for the following requests
     if (httpRequest.url.includes(`${this.authenticationService.host}/users/login`)) {
       return httpHandler.handle(httpRequest);
     }
     if (httpRequest.url.includes(`${this.authenticationService.host}/users/register`)) {
-      return httpHandler.handle(httpRequest);
-    }
-    if (httpRequest.url.includes(`${this.authenticationService.host}/users/login`)) {
-      return httpHandler.handle(httpRequest);
-    }
-    if (httpRequest.url.includes(`${this.authenticationService.host}/users/reset-password`)) {
       return httpHandler.handle(httpRequest);
     }
     // we send header params in other requests

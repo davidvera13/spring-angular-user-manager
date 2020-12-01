@@ -10,10 +10,10 @@ import {JwtHelperService} from '@auth0/angular-jwt';
   providedIn: 'root'
 })
 export class AuthenticationService {
-  host: string = environment.apiUrl;
-  private token = '';
-  private loggedUsername = '';
-  private jwtHelperService: JwtHelperService = new JwtHelperService();
+  public host = environment.apiUrl;
+  private token: string;
+  private loggedInUsername: string;
+  private jwtHelper: JwtHelperService = new JwtHelperService();
 
   constructor(private httpClient: HttpClient) { }
 
@@ -21,17 +21,13 @@ export class AuthenticationService {
     return this.httpClient.post<User>(`${this.host}/users/login`, user, { observe: 'response' });
   }
 
-  public register(user: User): Observable<HttpResponse<any> | HttpErrorResponse> {
-    return this.httpClient
-      .post<HttpResponse<any> | HttpErrorResponse>(
-        `${this.host}/users/register`,
-        user,
-        { observe: 'response'});
+  public register(user: User): Observable<User> {
+    return this.httpClient.post<User>(`${this.host}/users/register`, user);
   }
 
   public logout(): void {
-    this.token = '';
-    this.loggedUsername = '';
+    this.token = null;
+    this.loggedUsername = null;
     localStorage.removeItem('user');
     localStorage.removeItem('token');
     localStorage.removeItem('users');
@@ -48,11 +44,11 @@ export class AuthenticationService {
   }
 
   public getUserFromLocalStorage(): User {
-    return JSON.parse(localStorage.getItem('user') as string);
+    return JSON.parse(localStorage.getItem('user'));
   }
 
   public loadToken(): void {
-    this.token = localStorage.getItem('token') as string;
+    this.token = localStorage.getItem('token');
   }
 
   public getToken(): string {
@@ -60,10 +56,11 @@ export class AuthenticationService {
   }
 
   public isLoggedIn(): boolean {
-    if (this.token != null && this.token !== '') {
-      if (this.jwtHelperService.decodeToken(this.token).sub != null || '')  {
-        if (!this.jwtHelperService.isTokenExpired(this.token)) {
-          this.loggedUsername = this.jwtHelperService.decodeToken(this.token).sub;
+    this.loadToken();
+    if (this.token != null && this.token !== ''){
+      if (this.jwtHelper.decodeToken(this.token).sub != null || '') {
+        if (!this.jwtHelper.isTokenExpired(this.token)) {
+          this.loggedInUsername = this.jwtHelper.decodeToken(this.token).sub;
           return true;
         }
       }
@@ -71,6 +68,5 @@ export class AuthenticationService {
       this.logout();
       return false;
     }
-    return false;
   }
 }

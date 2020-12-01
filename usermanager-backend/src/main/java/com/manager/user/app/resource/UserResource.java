@@ -31,6 +31,7 @@ import java.util.List;
 import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping(path = {"/", "/users"})
 public class UserResource extends AppExceptionHandler {
     public static final String EMAIL_SENT = "An email with a new password was sent to: ";
@@ -62,7 +63,9 @@ public class UserResource extends AppExceptionHandler {
         User loginUser = userService.findUserByUsername(user.getUsername());
         UserPrincipal userPrincipal = new UserPrincipal(loginUser);
         HttpHeaders jwtHeader = getJwtHeader(userPrincipal);
-        return new ResponseEntity<>(loginUser, jwtHeader, HttpStatus.OK);
+        ResponseEntity<User> returnValue = new ResponseEntity<>(loginUser, jwtHeader, HttpStatus.OK);
+        System.out.println(returnValue.toString());
+        return returnValue;
     }
 
     @PostMapping("/add")
