@@ -21,7 +21,7 @@ export class LoginComponent implements OnInit, OnDestroy {
               private notificationService: NotificationService) { }
 
   ngOnInit(): void {
-    if (this.authenticationService.isLoggedIn()) {
+    if (this.authenticationService.isUserLoggedIn()) {
       this.router.navigateByUrl('/user/management');
     } else {
       this.router.navigateByUrl('/login');

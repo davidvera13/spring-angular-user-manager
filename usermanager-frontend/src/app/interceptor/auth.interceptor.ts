@@ -14,21 +14,19 @@ export class AuthInterceptor implements HttpInterceptor {
   constructor(private authenticationService: AuthenticationService) {}
 
   intercept(httpRequest: HttpRequest<any>, httpHandler: HttpHandler): Observable<HttpEvent<any>> {
-    // no headers to add for the following requests
     if (httpRequest.url.includes(`${this.authenticationService.host}/users/login`)) {
       return httpHandler.handle(httpRequest);
     }
     if (httpRequest.url.includes(`${this.authenticationService.host}/users/register`)) {
       return httpHandler.handle(httpRequest);
     }
-    // we send header params in other requests
     this.authenticationService.loadToken();
     const token = this.authenticationService.getToken();
-    const clonedRequest = httpRequest.clone({
+    const request = httpRequest.clone({
       setHeaders: {
         Authorization: `Bearer ${token}`
       }
     });
-    return httpHandler.handle(clonedRequest);
+    return httpHandler.handle(request);
   }
 }

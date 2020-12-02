@@ -11,7 +11,7 @@ import {JwtHelperService} from '@auth0/angular-jwt';
 })
 export class AuthenticationService {
   public host = environment.apiUrl;
-  private token!: string;
+  private token!: string | null;
   private loggedUsername!: string;
   private jwtHelper: JwtHelperService = new JwtHelperService();
 
@@ -34,9 +34,11 @@ export class AuthenticationService {
     localStorage.removeItem('users');
   }
 
-  public saveToken(token: string): void {
+  public saveToken(token: string | null): void {
     this.token = token;
-    localStorage.setItem('token', token);
+    if (token != null) {
+      localStorage.setItem('token', token);
+    }
   }
 
   public addUserToLocalStorage(user: User | null): void {
@@ -56,7 +58,7 @@ export class AuthenticationService {
     return this.token as string;
   }
 
-  public isLoggedIn(): boolean {
+  public isUserLoggedIn(): boolean {
     this.loadToken();
     if (this.token != null && this.token !== ''){
       if (this.jwtHelper.decodeToken(this.token).sub != null || '') {
